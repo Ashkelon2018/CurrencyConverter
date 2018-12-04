@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import telran.converter.dto.RateDto;
 
@@ -18,9 +19,14 @@ public class ConverterAppl {
 
 	public static void main(String[] args) throws URISyntaxException {
 		RestTemplate restTemplate = new RestTemplate();
-		String url = "http://data.fixer.io/api/latest?access_key=your API Key";
+		String url = "http://data.fixer.io/api/latest";
+		//?access_key=8c054e387fa9a278b92a5e65d6d1883d
+		UriComponentsBuilder builder =
+				UriComponentsBuilder.fromHttpUrl(url);
+		builder.queryParam("access_key", "your API Key");
+		builder.queryParam("symbols", "usd,eur,ils");
 		RequestEntity<String> request = 
-				new RequestEntity<>(HttpMethod.GET, new URI(url));
+				new RequestEntity<>(HttpMethod.GET, builder.build().toUri());
 		ResponseEntity<RateDto> response = 
 				restTemplate.exchange(request, RateDto.class);
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
